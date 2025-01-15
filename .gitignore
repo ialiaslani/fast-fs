@@ -22,9 +22,6 @@ poetry.lock
 ray_results/
 ray_session_*
 
-# Docker
-.docker/
-docker-compose.override.yml
 
 # Pytest
 .cache/
