@@ -34,12 +34,6 @@ def login(
     )
     return user
 
-
-@router.get("/protected", response_model=UserResponse)
-def protected_route(current_user: User = Depends(verify_cookie)):
-    return current_user
-
-
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie("access_token")

@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+
+from app.modules.auth.dependency import verify_cookie
 from app.modules.common.database import get_db
 from app.modules.common.hashing import hash_password
 from app.modules.user.models import User
@@ -9,7 +11,7 @@ from typing import List
 router = APIRouter()
 
 @router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
+def create_user(user: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(verify_cookie)):
     # Check if user exists
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
@@ -36,7 +38,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/{user_id}", response_model=UserResponse)
-def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
+def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(verify_cookie)):
     db_user = db.query(User).get(user_id)
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -52,7 +54,7 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)):
     return db_user
 
 @router.delete("/{user_id}", response_model=UserResponse)
-def delete_user(user_id: int, db: Session = Depends(get_db)):
+def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(verify_cookie)):
     # Fetch the user instance by ID
     db_user = db.query(User).get(user_id)
     if not db_user:
