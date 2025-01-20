@@ -10,6 +10,8 @@ services:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app
+      - DATABASE_URL=postgresql://postgres:fastapi_password@db:5432/fastapi_db
     depends_on:
       - db
 
@@ -18,7 +20,6 @@ services:
     container_name: fastapi-db
     environment:
       POSTGRES_DB: fastapi_db
-      POSTGRES_USER: fastapi_user
       POSTGRES_PASSWORD: fastapi_password
     ports:
       - "5432:5432"
