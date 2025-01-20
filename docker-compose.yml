@@ -1,17 +1,20 @@
 services:
-  fastapi:
+  fastapi-app:
     build: .
     container_name: fastapi-app
     ports:
-      - "8008:8008"
+      - "8000:8000"
     volumes:
       - .:/app
     environment:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app
       - DATABASE_URL=postgresql://postgres:fastapi_password@db:5432/fastapi_db
+      - ELASTICSEARCH_HOST=http://elasticsearch:9200
+      - ELASTICSEARCH_INDEX=fastapi-logs
     depends_on:
       - db
+      - elasticsearch
 
   db:
     image: postgres:13
@@ -25,5 +28,27 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.1
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.6.1
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+
 volumes:
   postgres_data:
+  es_data:
