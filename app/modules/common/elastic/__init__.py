@@ -1,5 +1,4 @@
 import logging
-import socket
 from pythonjsonlogger import jsonlogger
 from elasticsearch import Elasticsearch
 
@@ -22,19 +21,19 @@ class ElasticSearchHandler(logging.Handler):
         log_entry = self.format(record)
         self.es_client.index(index=self.index_name, body=log_entry)
 
+
+
+
 # Configure logger
 def configure_logger():
-    logger = logging.getLogger("fastapi")
+    logger = logging.getLogger("request_logger")
     logger.setLevel(logging.INFO)
 
-    # Elasticsearch handler
     es_handler = ElasticSearchHandler(es_client, ELASTICSEARCH_INDEX)
     es_handler.setLevel(logging.INFO)
 
     # JSON formatter
-    formatter = jsonlogger.JsonFormatter(
-        '%(asctime)s %(levelname)s %(name)s %(message)s'
-    )
+    formatter = jsonlogger.JsonFormatter('%(asctime)s %(levelname)s %(name)s %(message)s')
     es_handler.setFormatter(formatter)
 
     logger.addHandler(es_handler)

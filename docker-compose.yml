@@ -3,7 +3,7 @@ services:
     build: .
     container_name: fastapi-app
     ports:
-      - "8000:8000"
+      - "8008:8008"
     volumes:
       - .:/app
     environment:
