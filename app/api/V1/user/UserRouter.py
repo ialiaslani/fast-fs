@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
+from app.decorators.authenticate_user import authenticate_with_cookie
 from app.modules.auth.dependency import verify_cookie
 from app.modules.common.database import get_db
 from app.modules.common.hashing import hash_password
@@ -22,11 +23,16 @@ def create_user(user: UserCreate, db: Session = Depends(get_db), current_user: U
     db.refresh(new_user)
     return new_user
 
-@router.get("/all", response_model=List[UserResponse])
-def get_users(db: Session = Depends(get_db)):
-    # Fetch all users
+@router.get("/all", response_model=list[UserResponse])
+@authenticate_with_cookie()
+async def get_users(
+    request: Request,
+    db: Session = Depends(get_db),
+    # current_user: User = None  # Injected by the decorator
+):
     users = db.query(User).all()
     return users
+
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)):
