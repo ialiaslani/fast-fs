@@ -1,0 +1,46 @@
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pdb
+*.db
+*.sqlite
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+
+# Poetry
+poetry.lock
+*.toml
+*.toml.*
+
+# Ray logs and temporary files
+ray_results/
+ray_session_*
+
+
+# Pytest
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.hypothesis/
+*.pytest_cache/
+
+# VS Code
+.vscode/
+
+# JetBrains
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+.qodo
